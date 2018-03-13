@@ -1,0 +1,12 @@
+{
+  "name": "vote-coin",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "repository": "https://github.com/hibitproject/vote-core.git",
+  "author": "sis",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "crypto-js": "^3.1.9-1"
+  }
+}
