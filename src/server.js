@@ -17,7 +17,7 @@ app.get("/blocks", (req, res) => {
 
 app.post("/blocks", (req, res) => {
     const { body: { data } } = req;
-    const newBlock = createNewBlock();
+    const newBlock = createNewBlock(data);
     res.send(newBlock);
 });
 
