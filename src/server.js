@@ -1,11 +1,20 @@
 const express = require("express"),
     bodyParser = require("body-parser"),
     morgan = require("morgan"),
-    Blockchain = require("./blockchain");
+    Blockchain = require("./blockchain"),
+    P2P = require("./p2p");
 
-const { getBlockchain, createNewBlock } = Blockchain;
+const {
+    getBlockchain,
+    createNewBlock
+} = Blockchain;
 
-const PORT = 3000;
+const {
+    startP2PServer,
+    connectToPeers
+} = P2P;
+
+const PORT = process.env.HTTP_PORT || 3000;
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,10 +25,21 @@ app.get("/blocks", (req, res) => {
 });
 
 app.post("/blocks", (req, res) => {
-    const { body: { data } } = req;
+    const {
+        body: {
+            data
+        }
+    } = req;
     const newBlock = createNewBlock(data);
     res.send(newBlock);
 });
 
-app.listen(PORT, () => console.log(`nomadcoin server running on ${PORT}`));
+app.post("/peers", (req, res) => {
+    const { body : { peer }} = req;
+    connectToPeers(peer);
+    res.send();
+});
 
+const server = app.listen(PORT, () => console.log(`nomadcoin http server running on ${PORT}`));
+
+startP2PServer(server);
