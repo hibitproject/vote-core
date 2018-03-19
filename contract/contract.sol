@@ -1,5 +1,7 @@
 pragma solidity ^0.4.2;
 
+import rng.sol;
+
 contract Contract{
     address owner;
     uint256 data;
@@ -7,7 +9,7 @@ contract Contract{
     event logData(uint256 dataToLog);
 
     modifier onlyOwner(){
-        if (msg.sender != onwer)
+        if (msg.sender != owner)
             throw;
         _;
     }
