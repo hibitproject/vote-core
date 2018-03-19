@@ -4,8 +4,6 @@ contract RNG {
     mapping (address => uint) nonces;
     uint public randomNumber;
 
-	function RNG() { }
-
 	function randomNumber() returns(uint) {
         return randomNumberFromSeed(uint(sha3(block.number))^uint(sha3(now))^uint(msg.sender)^uint(tx.origin));
     }

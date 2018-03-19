@@ -1,8 +1,8 @@
 pragma solidity ^0.4.2;
 
-import rng.sol;
+import "./rng.sol";
 
-contract Contract{
+contract voteContract{
     address owner;
     uint256 data;
 
@@ -14,11 +14,10 @@ contract Contract{
         _;
     }
 
-    function Contract(uint256 initData, address initOwner){
+    function voteContract(uint256 initData, address initOwner){
         data = initData;
         address = initOwner;
     }
-
 
     function getData(){
         return data;
