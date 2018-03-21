@@ -33,7 +33,7 @@ let blockchain = [genesisBlock];
 
 const getNewestBlock = () => blockchain[blockchain.length - 1];
 
-const getTimestamp = () => new Date().getTime() / 1000;
+const getTimestamp = () => Math.round(new Date().getTime() / 1000);
 
 const getBlockchain = () => blockchain;
 
@@ -43,14 +43,14 @@ const createHash = (index, previousHash, timestamp, data, difficulty, nonce) =>
 
 const createNewBlock = data => {
 
-    const previousBlock = getNewestBlock();
-    const newBlockIndex = previousBlock.index + 1;
+    const oldBlock = getNewestBlock();
+    const newBlockIndex = oldBlock.index + 1;
     const newTimestamp = getTimestamp();
     const difficulty = findDifficulty(getBlockchain());
 
     const newBlock = findBlock(
         newBlockIndex,
-        previousBlock.hash,
+        oldBlock.hash,
         newTimestamp,
         data,
         difficulty
@@ -118,6 +118,10 @@ const hashMatchesDifficulty = (hash, difficulty) => {
 const getBlocksHash = block =>
     createHash(block.index, block.previousHash, block.timestamp, block.data, block.difficulty, block.nonce);
 
+const isTimeStempValid = (newBlock, oldBlock) => {
+    return (oldBlock.timestamp - 60 < newBlock.timestamp && newBlock.timestamp - 60 < getTimestamp());
+}
+
 const isBlockValid = (candidateBlock, latestBlock) => {
 
     if(!isBlockStructureValid(candidateBlock)) {
@@ -131,6 +135,9 @@ const isBlockValid = (candidateBlock, latestBlock) => {
         return false;
     } else if (getBlocksHash(candidateBlock) !== candidateBlock.hash) {
         console.log('the hash of this block is invalid');
+        return false;
+    } else if (!isTimeStempValid(candidateBlock, latestBlock)) {
+        console.log('the timestamp of this block is doggy');
         return false;
     }
     return true;
@@ -164,8 +171,13 @@ const isChainValid = (candidateChain) => {
     return true;
 };
 
+const sumDifficulty = anyBlockchain => anyBlockchain
+    .map(Block => block.difficulty)
+    .map(difficulty => Math.pow(2, difficulty))
+    .reduce((a, b) => a + b);
+
 const replaceChain = candidateBlock => {
-    if(isChainValid(candidateBlock) && candidateBlock.length > getBlockchain().length) {
+    if(isChainValid(candidateBlock) && sumDifficulty(candidateBlock) > sumDifficulty(getBlockchain())) {
         blockchain = candidateBlock;
         return true;
     } else {
