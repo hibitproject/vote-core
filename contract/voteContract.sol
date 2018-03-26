@@ -3,28 +3,37 @@ pragma solidity ^0.4.2;
 import "./rng.sol";
 
 contract voteContract{
-    address owner;
-    uint256 data;
+    struct voter{
+        address voterAddr;
+        //uint tokensBought;
+        //uint tokensUsedPerCandidate;
+    }
 
-    event logData(uint256 dataToLog);
+    mapping (address => voter) public voterInfo;
+    mapping (bytes32 => uint) public votesReceived;
 
-    modifier onlyOwner(){
-        if (msg.sender != owner)
+    bytes32[] public candidateList;
+
+    //event logData(uint256 dataToLog);
+    event
+    modifier isValidVoter(){
+        if (msg.sender != this.voterAddr)
             throw;
         _;
     }
 
-    function voteContract(uint256 initData, address initOwner){
+    function voteContract(address voterAddr, ){
         data = initData;
-        address = initOwner;
+        this.voterAddr = voterAddr;
+        this.category = category;
     }
 
     function getData(){
         return data;
     }
 
-    function setData(uint256 newData) onlyOwner {
-        logData(newData);
+    function setData(uint256 newData) {
+        //logData(newData);
         data = newData;
     }
 }
