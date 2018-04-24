@@ -6,20 +6,24 @@
 cd vote-core
 git checkout mjc
 ```
-
+  
 ```
 docker run -it \
   --name qtumjs \
   -v `pwd`:/dapp \
   hayeah/qtumportal
 ```
-
+  
 ```
 docker exec -it qtumjs sh
 
 ]# qcli generate 600
 
 ]# qcli getbalance
+```
+  
+```
+docker logs qtumjs
 ```
 
 ## 참고자료  
