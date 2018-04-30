@@ -4,19 +4,24 @@ contract VoteApp {
     struct Vote {
         bytes32 question;
         bytes32[] answers;
-        mapping (bytes32 => uint8 ) voteCnt;
+        uint[5] voteCnt;
     }
+    mapping (bytes32 => uint) indexInfo;
 
     Vote vote;
 
     function VoteApp(bytes32 quest, bytes32[] answ) public {
         vote.question = quest;
         vote.answers = answ;
+
+        for(uint i=0; i < answ.length; i++){
+            indexInfo[vote.answers[i]] = i;
+        }
     }
 
     function voting(bytes32 answ) public {
-        require(validAnswer(answ));
-        vote.voteCnt[answ] += 1;
+        uint index = indexInfo[answ];
+        vote.voteCnt[index] += 1;
     }
 
     function getQuestion() public returns (bytes32) {
@@ -27,17 +32,16 @@ contract VoteApp {
         return vote.answers;
     }
 
-    function getVoteCnt() public return (mapping) {
+    function getCnt() public returns (uint[5]) {
         return vote.voteCnt;
     }
 
-    function validAnswer(bytes32 answ) view public returns (bool) {
-        for(uint i = 0; i < vote.answers.length; i++) {
-            if (vote.answers[i] == answ) {
-                return true;
+    function getIndexAnswers(bytes32 answ) public returns (uint) {
+        for (uint i = 0; i < vote.answers.length; i++){
+            if ( vote.answers[i] == answ ){
+                return i;
             }
         }
-
-        return false;
+        return uint(-1);
     }
 }
